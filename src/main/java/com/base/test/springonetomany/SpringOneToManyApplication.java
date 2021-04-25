@@ -1,13 +1,13 @@
-package com.ais.barbershop.AISBarbershop;
+package com.base.test.springonetomany;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class AisBarbershopApplication {
+public class SpringOneToManyApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(AisBarbershopApplication.class, args);
+		SpringApplication.run(SpringOneToManyApplication.class, args);
 	}
 
 }
