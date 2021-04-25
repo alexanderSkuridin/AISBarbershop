@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Справочник "Клиенты"</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+      <a class="navbar-brand" href="/index">Барбершоп</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" href="/index">Главная</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/order">Запись на стрижку</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/master">Мастера</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="/customer">Клиенты</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/service">Услуги</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div role="main" class="container">
+    <div class="row">
+      <div class="col-md-5">
+        <h2>Добавить клиента</h2>
+        <form method="POST" action="/addCustomer" modelAttribute="customer">
+          <div class="form-group">
+            <label for="fio"><b>ФИО</b></label>
+            <input type="text" class="form-control" id="fio" name="name" placeholder="Фамилия Имя Отчество">
+          </div>
+          <div class="form-group">
+            <label for="phone"><b>Телефон</b></label>
+            <input type="tel" class="form-control" id="phone" name="phone"  placeholder="+7 (900) 123-45-67" pattern="\+7\s?[\(]{0,1}9[0-9]{2}[\)]{0,1}\s?\d{3}[-]{0,1}\d{2}[-]{0,1}\d{2}">
+          </div>
+          <div class="form-group">
+            <label for="note"><b>Заметки</b></label>
+            <input type="text" class="form-control" id="note" name="note" placeholder="Дополнительная информация">
+          </div>
+          <button type="submit" class="btn btn-primary mt-2">Добавить</button>
+        </form>
+      </div>
+      <div class="col-md-7">
+        <h2>Клиенты</h2>
+        <table id="mastersTable" class="table table-striped">
+          <thead class="thead-dark">
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">ФИО</th>
+            <th scope="col">Телефон</th>
+            <th scope="col">Заметки</th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="customer, stat : ${customers}">
+            <th scope="row"><span th:text="${stat.count}"></span></th>
+            <td><span th:text="${customer.name}"></span></td>
+            <td><span th:text="${customer.phone}"></span></td>
+            <td><span th:text="${customer.note}"></span></td>
+            <td>
+              <button type="button" class="showFormModal">
+                <i class="fas fa-edit"></i>
+              </button>
+            </td>
+            <td>
+              <form id="removeForm" method="POST" action="/removeCustomer">
+                <input type="hidden" name="id" th:attr="value = ${customer.id}" >
+                <button type="submit"><i class="fas fa-trash-alt"></i></button>
+              </form>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-body">
+          <h2>Редактировать мастера</h2>
+          <form method="POST" action="/updateCustomer" modelAttribute="customer">
+            <div class="form-group">
+              <label for="fio"><b>ФИО</b></label>
+              <input type="text" class="form-control" id="ufio" name="uname" placeholder="Фамилия Имя Отчество">
+            </div>
+            <div class="form-group">
+              <label for="phone"><b>Телефон</b></label>
+              <input type="tel" class="form-control" id="uphone" name="uphone"  placeholder="+7 (900) 123-45-67" pattern="\+7\s?[\(]{0,1}9[0-9]{2}[\)]{0,1}\s?\d{3}[-]{0,1}\d{2}[-]{0,1}\d{2}">
+            </div>
+            <div class="form-group">
+              <label for="note"><b>Заметки</b></label>
+              <input type="text" class="form-control" id="unote" name="unote" placeholder="Дополнительная информация">
+            </div>
+            <input type="hidden" name="uid" id="uid">
+            <button type="submit" class="btn btn-primary mt-2">Изменить</button>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
+  <script>
+    const table = document.getElementById('mastersTable');
+    const fio = document.getElementById('ufio');
+    const phone = document.getElementById('uphone');
+    const note = document.getElementById('unote');
+    const inp = document.getElementById('uid');
+    const modal = new bootstrap.Modal(document.getElementById('staticBackdrop'), {})
+    elements = document.getElementsByClassName("showFormModal");
+    [...elements].forEach(function(item){
+      item.onclick = function(e) {
+        let tr = e.target.closest('tr');
+        fio.value = tr.cells[1].innerText;
+        phone.value = tr.cells[2].innerText;
+        note.value = tr.cells[3].innerText;
+        inp.value = tr.cells[5].querySelector('#removeForm')[0].value;
+        modal.show()
+      };
+    })
+  </script>
+</body>
+</html>

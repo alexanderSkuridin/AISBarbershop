@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Справочник "Услуги"</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+      <a class="navbar-brand" href="/index">Барбершоп</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" href="/index">Главная</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/order">Запись на стрижку</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/master">Мастера</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/customer">Клиенты</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link  active" href="/service">Услуги</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div role="main" class="container">
+    <div class="row">
+      <div class="col-md-5">
+        <h2>Добавить услугу</h2>
+        <form method="POST" action="/addService" modelAttribute="service">
+          <div class="form-group">
+            <label for="serv"><b>Название услуги</b></label>
+            <input type="text" class="form-control" id="serv" name="name" placeholder="Услуга...">
+          </div>
+          <div class="form-group">
+            <label for="desc"><b>Описание</b></label>
+            <input type="text" class="form-control" id="desc" name="desc"  placeholder="Описание">
+          </div>
+          <div class="form-group">
+            <label for="price"><b>Стоимость</b></label>
+            <input class="form-control" id="price" name="price" type=text onkeyup=inp_sum_n(this,2) onkeydown=inp_sum_n(this,2) onpaste=inp_sum_n(this,2) onfocus=inp_sum_n(this,2) placeholder="111.11">
+          </div>
+          <button type="submit" class="btn btn-primary mt-2">Добавить</button>
+        </form>
+      </div>
+      <div class="col-md-7">
+        <h2>Услуги</h2>
+        <table id="mastersTable" class="table table-striped">
+          <thead class="thead-dark">
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Название</th>
+            <th scope="col">Описание</th>
+            <th scope="col">Стоимость</th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="service, stat : ${services}">
+            <th scope="row"><span th:text="${stat.count}"></span></th>
+            <td><span th:text="${service.name}"></span></td>
+            <td><span th:text="${service.description}"></span></td>
+            <td><span th:text="${service.amount}"></span></td>
+            <td>
+              <button type="button" class="showFormModal">
+                <i class="fas fa-edit"></i>
+              </button>
+            </td>
+            <td>
+              <form id="removeForm" method="POST" action="/removeService">
+                <input type="hidden" name="id" th:attr="value = ${service.id}" >
+                <button type="submit"><i class="fas fa-trash-alt"></i></button>
+              </form>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-body">
+          <h2>Редактировать мастера</h2>
+          <form method="POST" action="/updateService" modelAttribute="service">
+            <div class="form-group">
+              <label for="userv"><b>Название услуги</b></label>
+              <input type="text" class="form-control" id="userv" name="uname" placeholder="Услуга...">
+            </div>
+            <div class="form-group">
+              <label for="udesc"><b>Описание</b></label>
+              <input type="text" class="form-control" id="udesc" name="udesc"  placeholder="Описание">
+            </div>
+            <div class="form-group">
+              <label for="uprice"><b>Стоимость</b></label>
+              <input class="form-control" id="uprice" name="uprice" type="text" onkeyup=inp_sum_n("uprice",2) onkeydown=inp_sum_n("uprice",2) onpaste=inp_sum_n("uprice",2) onfocus=inp_sum_n("uprice",2) placeholder="111.11">
+            </div>
+            <input type="hidden" name="uid" id="uid">
+            <button type="submit" class="btn btn-primary mt-2">Добавить</button>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
+  <script>
+    const table = document.getElementById('mastersTable');
+    const serv = document.getElementById('userv');
+    const desc = document.getElementById('udesc');
+    const price = document.getElementById('uprice');
+    const inp = document.getElementById('uid');
+    const modal = new bootstrap.Modal(document.getElementById('staticBackdrop'), {})
+    elements = document.getElementsByClassName("showFormModal");
+    [...elements].forEach(function(item){
+      item.onclick = function(e) {
+        let tr = e.target.closest('tr');
+        serv.value = tr.cells[1].innerText;
+        desc.value = tr.cells[2].innerText;
+        price.value = tr.cells[3].innerText;
+        inp.value = tr.cells[5].querySelector('#removeForm')[0].value;
+        modal.show()
+      };
+    })
+
+    function inp_sum_n(e_field,n_dec){
+
+    ///////////ввод целой суммы c разделением тысяч////////////////////
+    if("createRange" in document){c_p=e_field.selectionEnd
+                                  ie=false }
+                                  else{ie=true}
+    if(ie){
+    e_range=e_field.createTextRange()
+    e_range.expand("character",e_field.value.length)
+    r=document.selection.createRange()
+    r.setEndPoint("StartToStart",e_range)
+    c_p=r.text.length
+    //////////// форматирование введенной строки
+    }
+    txt=e_field.value
+    txt1=""
+    d=0
+    txt1=""
+    brd=txt.match(/[.,]/)
+    if(brd==null){brd=txt.length}else{brd=brd.index}
+    p_let=""
+    i_dig=0
+    for(i=0;i<txt.length;i++){ii=txt.length-1-i
+      let=txt.charAt(ii)
+      if("0123456789".indexOf(let)>=0){is_digit=true}else{is_digit=false}
+      if(is_digit)i_dig++
+      if(ii==brd)i_dig=0
+      if(ii>=brd){if(is_digit||(ii==brd&&(let=="."||let==","))){txt1=let+txt1}else{if(c_p>ii)c_p--}}
+      if(ii<brd){if(is_digit){txt1=let+txt1}else{if(c_p>ii)c_p--}
+               if(is_digit&&i_dig%3==0&&i_dig!==0&&ii!==0)
+               {txt1="'"+txt1;if(c_p>=ii)c_p++}
+               }
+    }
+    ////////////////////////////////
+    if(n_dec>0){
+      brd=txt1.match(/[.,]/)
+      if(brd==null){brd=txt1.length}else{brd=brd.index}
+      while(txt1.length-1-brd>n_dec){if(c_p>=txt1.length-1)c_p--
+         txt1=txt1.substr(0,txt1.length-1)}
+    }
+    /////////////сохранение готовой строки и восстановление позиции курсора
+    e_field.value=txt1
+    if(ie){r.move("character",c_p)
+           r.select()
+          }else{e_field.setSelectionRange(c_p,c_p)}
+
+    }
+  </script>
+</body>
+</html>
