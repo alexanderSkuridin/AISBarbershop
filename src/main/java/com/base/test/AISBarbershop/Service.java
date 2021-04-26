@@ -1,4 +1,4 @@
-package com.base.test.springonetomany;
+package com.base.test.AISBarbershop;
 
 import org.springframework.format.annotation.NumberFormat;
 
